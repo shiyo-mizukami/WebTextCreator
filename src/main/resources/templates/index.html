@@ -1,10 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>Insert title</title>
+    <meta charset="UTF-8">
+    <title>TextCreater Web</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<div class="container">
+
+    <h2 class="title">TextCreater Web</h2>
+
+    <!-- ▼ 上：情報入力 --------- -->
+    <div class="compact-panel">
+
+        <div class="row-group">
+            <label class="label">社名</label>
+            <input type="text" class="input-mid">
+        </div>
+
+        <div class="row-group">
+            <label class="label">氏名</label>
+            <input type="text" class="input-small">
+            <label class="label-inline">役職</label>
+            <select class="input-small">
+                <option>さん</option>
+                <option>主任</option>
+                <option>上級主任</option>
+                <option>課長</option>
+                <option>所長</option>
+            </select>
+        </div>
+
+        <div class="row-group">
+            <label class="label">電話番号</label>
+            <input type="text" class="input-mid">
+            <button class="btn-mini">登録</button>
+        </div>
+
+        <div class="row-group">
+            <label class="label">こちらの状態</label>
+            <label><input type="radio" name="myState">不在</label>
+            <label><input type="radio" name="myState">離席</label>
+            <label><input type="radio" name="myState">対応中</label>
+        </div>
+
+        <div class="row-group">
+            <label class="label">相手の対応</label>
+            <label><input type="radio" name="resp">掛け直す</label>
+            <label><input type="radio" name="resp">折り返し希望</label>
+            <label><input type="radio" name="resp">メール送る</label>
+        </div>
+
+        <div class="btn-group-mini">
+            <button class="btn-small">文章作成</button>
+            <button class="btn-small">リセット</button>
+            <button class="btn-small">コピー</button>
+        </div>
+
+    </div>
+
+    <!-- ▼ 下：文章表示（幅を入力と揃える） --------- -->
+    <textarea id="result" class="result-wide"></textarea>
+
+</div>
 
 </body>
 </html>
