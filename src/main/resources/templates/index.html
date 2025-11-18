@@ -1,69 +1,124 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>TextCreater Web</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>TextCreater Web</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css"
+      integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+<link rel="stylesheet" href="style.css">
 </head>
-<body>
 
+<body>
 <div class="container">
 
     <h2 class="title">TextCreater Web</h2>
 
-    <!-- ▼ 上：情報入力 --------- -->
-    <div class="compact-panel">
+    <form id="textForm">
 
-        <div class="row-group">
-            <label class="label">社名</label>
-            <input type="text" class="input-mid">
+        <!-- 入力欄 -->
+        <div class="form-group row align-items-center">
+            <label class="col-sm-2 col-form-label">社名</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control form-control-sm input-mid" id="company">
+            </div>
         </div>
 
-        <div class="row-group">
-            <label class="label">氏名</label>
-            <input type="text" class="input-small">
-            <label class="label-inline">役職</label>
-            <select class="input-small">
-                <option>さん</option>
-                <option>主任</option>
-                <option>上級主任</option>
-                <option>課長</option>
-                <option>所長</option>
-            </select>
+        <div class="form-group row align-items-center">
+            <label class="col-sm-2 col-form-label">氏名</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control form-control-sm input-small" id="name">
+            </div>
+            <label class="col-sm-2 col-form-label">役職</label>
+            <div class="col-sm-4">
+                <select class="form-control form-control-sm" id="position">
+                    <option>さん</option>
+                    <option>主任</option>
+                    <option>上級主任</option>
+                    <option>課長</option>
+                    <option>所長</option>
+                </select>
+            </div>
         </div>
 
-        <div class="row-group">
-            <label class="label">電話番号</label>
-            <input type="text" class="input-mid">
-            <button class="btn-mini">登録</button>
+        <div class="form-group row align-items-center">
+            <label class="col-sm-2 col-form-label">電話番号</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control form-control-sm input-mid" id="phone">
+            </div>
         </div>
 
-        <div class="row-group">
-            <label class="label">こちらの状態</label>
-            <label><input type="radio" name="myState">不在</label>
-            <label><input type="radio" name="myState">離席</label>
-            <label><input type="radio" name="myState">対応中</label>
+        <!-- ラジオ選択 -->
+        <fieldset class="form-group">
+            <legend>こちらの状態</legend>
+            <label class="mr-3"><input type="radio" name="myState" value="不在"> 不在</label>
+            <label class="mr-3"><input type="radio" name="myState" value="離席"> 離席</label>
+            <label><input type="radio" name="myState" value="対応中"> 対応中</label>
+        </fieldset>
+
+        <fieldset class="form-group">
+            <legend>相手の対応</legend>
+            <label class="mr-3"><input type="radio" name="resp" value="掛け直す"> 掛け直す</label>
+            <label class="mr-3"><input type="radio" name="resp" value="折り返し希望"> 折り返し希望</label>
+            <label><input type="radio" name="resp" value="メール送る"> メール送る</label>
+        </fieldset>
+
+		<!-- 文章作成（中央） + コピー（右端） -->
+		<div class="d-flex align-items-center mb-2 position-relative button-row">
+
+		    <!-- 中央配置 -->
+		    <div class="mx-auto">
+		        <button type="button" class="btn btn-primary btn-sm" id="createBtn" style="min-width:120px;">
+		            文章作成
+		        </button>
+		    </div>
+
+		    <!-- 右端（絶対配置） -->
+		    <button type="button" class="btn btn-success btn-sm"
+		            id="copyBtn"
+		            style="min-width:100px; position:absolute; right:0;">
+		        コピー
+		    </button>
+
+		</div>
+
+
+        <!-- テキストエリア -->
+        <textarea id="result" class="form-control result-box"></textarea>
+
+        <!-- テキスト枠の外右下にリセット -->
+        <div class="d-flex justify-content-end mt-1">
+            <button type="button" class="btn btn-secondary btn-sm" id="resetBtn" style="min-width:80px;">リセット</button>
         </div>
 
-        <div class="row-group">
-            <label class="label">相手の対応</label>
-            <label><input type="radio" name="resp">掛け直す</label>
-            <label><input type="radio" name="resp">折り返し希望</label>
-            <label><input type="radio" name="resp">メール送る</label>
-        </div>
-
-        <div class="btn-group-mini">
-            <button class="btn-small">文章作成</button>
-            <button class="btn-small">リセット</button>
-            <button class="btn-small">コピー</button>
-        </div>
-
-    </div>
-
-    <!-- ▼ 下：文章表示（幅を入力と揃える） --------- -->
-    <textarea id="result" class="result-wide"></textarea>
-
+    </form>
 </div>
+
+<script>
+    const createBtn = document.getElementById('createBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const resultArea = document.getElementById('result');
+
+    createBtn.addEventListener('click', () => {
+        const company = document.getElementById('company').value;
+        const name = document.getElementById('name').value;
+        const position = document.getElementById('position').value;
+        const myState = document.querySelector('input[name="myState"]:checked')?.value || '';
+        const resp = document.querySelector('input[name="resp"]:checked')?.value || '';
+
+        resultArea.value = `${company}の${name}${position}です。こちらは${myState}で、相手の対応は${resp}です。`;
+    });
+
+    resetBtn.addEventListener('click', () => {
+        document.getElementById('textForm').reset();
+        resultArea.value = '';
+    });
+
+    copyBtn.addEventListener('click', () => {
+        resultArea.select();
+        document.execCommand('copy');
+    });
+</script>
 
 </body>
 </html>
