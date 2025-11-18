@@ -40,12 +40,19 @@
             </div>
         </div>
 
-        <div class="form-group row align-items-center">
-            <label class="col-sm-2 col-form-label">電話番号</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control form-control-sm input-mid" id="phone">
-            </div>
-        </div>
+		<div class="form-group row align-items-center">
+		    <label class="col-sm-2 col-form-label">電話番号</label>
+
+		    <div class="col-sm-10 d-flex align-items-center">
+		        <input type="text" class="form-control form-control-sm input-mid" id="phone">
+
+		        <!-- ★ 電話番号の右横にボタン追加 -->
+		        <button type="button" class="btn btn-primary btn-sm ml-5">
+		            リストに登録
+		        </button>
+		    </div>
+		</div>
+
 
         <!-- ラジオ選択 -->
         <fieldset class="form-group">
@@ -60,6 +67,7 @@
             <label class="mr-3"><input type="radio" name="resp" value="掛け直す"> 掛け直す</label>
             <label class="mr-3"><input type="radio" name="resp" value="折り返し希望"> 折り返し希望</label>
             <label><input type="radio" name="resp" value="メール送る"> メール送る</label>
+			
         </fieldset>
 
 		<!-- 文章作成（中央） + コピー（右端） -->
