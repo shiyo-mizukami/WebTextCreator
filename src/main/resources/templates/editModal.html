@@ -1,0 +1,110 @@
+<!--編集モーダル-->
+<head>
+	<link rel="stylesheet" href="/modal.css">
+</head>
+<div class="edit_modal" id="edit_modal">
+	<div class="modal_content">
+		<button type="button" class="close" data-dismiss="modal"></button>
+		<div class="modal-body pointer-auto">
+			<!-- 変更前情報 -->
+			<div class="modal-header">
+				<h5 class="modal-title">編集前情報</h5>
+			</div>
+			<div class="form-group row align-items-center">
+				<label class="col-sm-2 col-form-label text-center">社名</label>
+				<div class="col-sm-10">日研トータルソーシング</div>
+
+				<label class="col-sm-2 col-form-label text-center">氏名</label>
+				<div class="col-sm-4">内海</div>
+
+				<label class="col-sm-2 col-form-label text-center">役職</label>
+				<div class="col-sm-4">ー</div>
+
+				<label class="col-sm-2 col-form-label text-center">電話番号</label>
+				<div class="col-sm-10">03-5711-6452</div>
+			</div>
+			<div class="modal-footer"></div>
+
+			<!-- 入力欄 -->
+			<form>
+				<div class="modal-header">
+					<h5 class="modal-title">変更情報入力</h5>
+				</div>
+
+				<div class="form-group row align-items-center">
+
+					<label class="col-sm-2 col-form-label text-center">社名</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control form-control-sm input-mid" id="edit_company">
+					</div>
+				</div>
+
+				<div class="form-group row align-items-center">
+					<label class="col-sm-2 col-form-label text-center">氏名</label>
+					<div class="col-sm-4">
+						<input type="text" class="form-control form-control-sm input-small" id="edit_name">
+					</div>
+					<label class="col-sm-2 col-form-label text-center">役職</label>
+					<div class="col-sm-4">
+						<select class="form-control form-control-sm" id="edit_position">
+							<option value="" selected>選択してください</option>
+							<option>ー</option>
+							<option>さん</option>
+							<option>主任</option>
+							<option>上級主任</option>
+							<option>課長</option>
+							<option>所長</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group row align-items-center">
+					<label class="col-sm-2 col-form-label text-center">電話番号</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control form-control-sm input-mid" id="edit_phone">
+					</div>
+				</div>
+			</form>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" id="close_btn">キャンセル</button>
+				<button type="button" class="btn btn-primary" id="save_btn">変更</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	const modal = document.getElementById('edit_modal');
+	//const editInput = document.getElementById('edit-input');
+	const saveBtn = document.getElementById('save_btn');
+	const closeBtn = document.getElementById('close_btn');
+	const panels = document.querySelectorAll('.panel');
+	let selectedRow = null;
+
+	// aタグクリックでモーダル表示
+	document.querySelectorAll('.open_edit_modal').forEach(link => {
+		link.addEventListener('click', (e) => {
+			e.preventDefault(); // ページ遷移防止
+			selectedRow = link.closest('tr'); // 親のtrを取得
+			//editInput.value = selectedRow.cells[1].textContent; // 2列目のデータを編集対象に
+			modal.style.display = 'block';
+			panels.forEach(panel => panel.style.pointerEvents = 'none');
+		});
+	});
+
+	// 保存ボタンでデータ更新
+	saveBtn.addEventListener('click', () => {
+		if (selectedRow) {
+			selectedRow.cells[1].textContent = editInput.value;
+		}
+		modal.style.display = 'none';
+	});
+
+	// 閉じるボタン
+	closeBtn.addEventListener('click', () => {
+		modal.style.display = 'none';
+		panels.forEach(panel => panel.style.pointerEvents = 'auto');
+	});
+
+</script>

@@ -9,9 +9,12 @@
 	<link rel="stylesheet" href="/style.css">
 	<title>電話メモ</title>
 <style>
+body {
+	flex-wrap: wrap;
+}
 .panel {
-	width: 50%;
-	float: left;
+	flex: 1 1 50%;
+	box-sizing: border-box;
 }
 </style>
 </head>
@@ -19,6 +22,7 @@
 <body>
 	<div class="panel" th:insert="~{index}"></div>
 	<div class="panel" th:insert="~{list}"></div>
+	<div th:replace="~{editModal}"></div>
 </body>
 
 </html>

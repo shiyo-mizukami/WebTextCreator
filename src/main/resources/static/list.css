@@ -1,11 +1,23 @@
 @charset "UTF-8";
 
-.list_container {
-	max-width: 700px;
-	width: 100%;
-	margin: 0 auto 0 auto;
+.list_table {
+	display: block;
+}
+
+.table_wrapper {
+	max-height: 600px;     /* 固定高さ */
+	overflow-y: auto;      /* 縦スクロール */
+	overflow-x: hidden;    /* 横スクロール不要なら非表示 */
+	margin: auto;
 }
 
 th {
+	position: sticky;
+	top: 0;
+	z-index: 2;            /* ヘッダーを前面に */
 	background-color: lavender;
+}
+
+th, td {
+	border-top: none !important;
 }
