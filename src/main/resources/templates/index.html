@@ -1,20 +1,5 @@
-<!--<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<title>TextCreater Web</title>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css"
-      integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
-<link rel="stylesheet" href="style.css">
-</head>
-
-<body>-->
 <div class="container">
-
-    
-
     <form id="textForm">
-
         <!-- 入力欄 -->
         <div class="form-group row align-items-center">
             <label class="col-sm-2 col-form-label">社名</label>
@@ -31,6 +16,8 @@
             <label class="col-sm-2 col-form-label">役職</label>
             <div class="col-sm-4">
                 <select class="form-control form-control-sm" id="position">
+					<option value="" selected>選択してください</option>
+					<option>様</option>
                     <option>さん</option>
                     <option>主任</option>
                     <option>上級主任</option>
@@ -40,64 +27,42 @@
             </div>
         </div>
 
-		<div class="form-group row align-items-center">
-		    <label class="col-sm-2 col-form-label">電話番号</label>
-
-		    <div class="col-sm-10 d-flex align-items-center">
-		        <input type="text" class="form-control form-control-sm input-mid" id="phone">
-
-		        <!-- ★ 電話番号の右横にボタン追加 -->
-		        <button type="button" class="btn btn-primary btn-sm ml-5">
-		            リストに登録
-		        </button>
-		    </div>
-		</div>
-
+        <div class="form-group row align-items-center">
+            <label class="col-sm-2 col-form-label">電話番号</label>
+            <div class="col-sm-10 d-flex align-items-center">
+                <input type="text" class="form-control form-control-sm input-mid" id="phone">
+                <button type="button" class="btn btn-primary btn-sm ml-5">リストに登録</button>
+            </div>
+        </div>
 
         <!-- ラジオ選択 -->
         <fieldset class="form-group">
             <legend>こちらの状態</legend>
             <label class="mr-3"><input type="radio" name="myState" value="不在"> 不在</label>
-            <label class="mr-3"><input type="radio" name="myState" value="離席"> 離席</label>
+            <label class="mr-3"><input type="radio" name="myState" value="離席中"> 離席中</label>
             <label><input type="radio" name="myState" value="対応中"> 対応中</label>
         </fieldset>
 
         <fieldset class="form-group">
             <legend>相手の対応</legend>
-            <label class="mr-3"><input type="radio" name="resp" value="掛け直す"> 掛け直す</label>
-            <label class="mr-3"><input type="radio" name="resp" value="折り返し希望"> 折り返し希望</label>
-            <label><input type="radio" name="resp" value="メール送る"> メール送る</label>
-			
+            <label class="mr-3"><input type="radio" name="resp" value="改めて掛け直す"> 掛け直す</label>
+            <label class="mr-3"><input type="radio" name="resp" value="折り返し電話希望"> 折り返し希望</label>
+            <label><input type="radio" name="resp" value="メールを送る"> メール送る</label>
         </fieldset>
 
-		<!-- 文章作成（中央） + コピー（右端） -->
-		<div class="d-flex align-items-center mb-2 position-relative button-row">
+        <!-- 文章作成 + コピー -->
+        <div class="d-flex align-items-center mb-2 position-relative button-row">
+            <div class="mx-auto">
+                <button type="button" class="btn btn-primary btn-sm" id="createBtn" style="min-width:120px;">文章作成</button>
+            </div>
+            <button type="button" class="btn btn-success btn-sm" id="copyBtn" style="min-width:100px; position:absolute; right:0;">コピー</button>
+        </div>
 
-		    <!-- 中央配置 -->
-		    <div class="mx-auto">
-		        <button type="button" class="btn btn-primary btn-sm" id="createBtn" style="min-width:120px;">
-		            文章作成
-		        </button>
-		    </div>
-
-		    <!-- 右端（絶対配置） -->
-		    <button type="button" class="btn btn-success btn-sm"
-		            id="copyBtn"
-		            style="min-width:100px; position:absolute; right:0;">
-		        コピー
-		    </button>
-
-		</div>
-
-
-        <!-- テキストエリア -->
         <textarea id="result" class="form-control result-box"></textarea>
 
-        <!-- テキスト枠の外右下にリセット -->
         <div class="d-flex justify-content-end mt-1">
             <button type="button" class="btn btn-secondary btn-sm" id="resetBtn" style="min-width:80px;">リセット</button>
         </div>
-
     </form>
 </div>
 
@@ -107,14 +72,50 @@
     const copyBtn = document.getElementById('copyBtn');
     const resultArea = document.getElementById('result');
 
+    // ラジオボタンを選択解除可能にする
+    function makeRadioToggleable(radios) {
+        radios.forEach(radio => {
+            radio.addEventListener('click', function() {
+                if (radio.wasChecked) {
+                    radio.checked = false;
+                    radio.wasChecked = false;
+                } else {
+                    radios.forEach(r => r.wasChecked = false);
+                    radio.wasChecked = radio.checked;
+                }
+            });
+        });
+    }
+
+    makeRadioToggleable(document.querySelectorAll('input[name="myState"]'));
+    makeRadioToggleable(document.querySelectorAll('input[name="resp"]'));
+
     createBtn.addEventListener('click', () => {
         const company = document.getElementById('company').value;
         const name = document.getElementById('name').value;
         const position = document.getElementById('position').value;
+        const phone = document.getElementById('phone').value;
         const myState = document.querySelector('input[name="myState"]:checked')?.value || '';
         const resp = document.querySelector('input[name="resp"]:checked')?.value || '';
+		
+		// 必須チェック（ラジオは除く）
+		    const missingFields = [];
+		    if (!company) missingFields.push('社名');
+		    if (!name) missingFields.push('氏名');
+		    if (!position) missingFields.push('役職');
+		    if (!phone) missingFields.push('電話番号');
 
-        resultArea.value = `${company}の${name}${position}です。こちらは${myState}で、相手の対応は${resp}です。`;
+		    if (missingFields.length > 0) {
+		        alert(missingFields.join('、') + 'を入力してください。');
+		        return; // 未入力がある場合は処理中断
+		    }
+
+        const nowTime = new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+
+        resultArea.value = 
+`【相手先】 ${company} ${name} ${position} ${nowTime}
+【電話番号】 ${phone}
+【内容】${myState || resp ? '\n' : ''}${myState ? myState + 'の旨をお伝えしたところ、' : ''}${resp ? resp + 'とのことでした。' : ''}`;
     });
 
     resetBtn.addEventListener('click', () => {
@@ -127,7 +128,3 @@
         document.execCommand('copy');
     });
 </script>
-<!---
-</body>
-</html>
--->
