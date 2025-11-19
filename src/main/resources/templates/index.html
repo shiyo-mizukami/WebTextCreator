@@ -31,7 +31,7 @@
             <label class="col-sm-2 col-form-label">電話番号</label>
             <div class="col-sm-10 d-flex align-items-center">
                 <input type="text" class="form-control form-control-sm input-mid" id="phone">
-                <button type="button" class="btn btn-primary btn-sm ml-5">リストに登録</button>
+                <button type="button" class="btn btn-primary btn-sm ml-5" id ="addListBtn">リストに登録</button>
             </div>
         </div>
 
@@ -89,6 +89,23 @@
 
     makeRadioToggleable(document.querySelectorAll('input[name="myState"]'));
     makeRadioToggleable(document.querySelectorAll('input[name="resp"]'));
+	
+	const addListBtn = document.getElementById('addListBtn');
+	    addListBtn.addEventListener('click', (event) => {
+	        event.preventDefault();
+	        event.stopPropagation();
+
+	        const company = document.getElementById('company').value.trim();
+	        const name    = document.getElementById('name').value.trim();
+	        const phone   = document.getElementById('phone').value.trim();
+
+	        if (!company || !name || !phone) {
+	            alert("相手先情報を登録しました。");
+	            return;
+	        }
+
+	        alert("すでに登録されています。");
+	    });
 
     createBtn.addEventListener('click', () => {
         const company = document.getElementById('company').value;
