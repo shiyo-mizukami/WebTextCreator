@@ -15,24 +15,24 @@
 				</tr>
 
 				<!--データ-->
-				<tr>
+				<tr th:each="list : ${telList}">
 					<!--	編集モーダルを開くボタン-->
-					<td><a href="#" class="open_edit_modal">編集</a></td>
+					<td class="td_link"><a href="#" class="open_edit_modal">編集</a></td>
 
 					<!--社名-->
-					<td>TB</td>
+					<td th:text="${list.companyName}"></td>
 
 					<!--氏名-->
-					<td>吉田</td>
+					<td th:text="${list.personName}"></td>
 
 					<!--役職-->
-					<td>所長</td>
+					<td th:text="${list.honolific}"></td>
 
 					<!--電話番号-->
-					<td>ー</td>
+					<td class="td_tel_number" th:text="${list.telNumber}"></td>
 
 					<!--削除ボタン-->
-					<td><a href="#">削除</a></td>
+					<td class="td_link"><a href="#">削除</a></td>
 				</tr>
 
 				<tr>

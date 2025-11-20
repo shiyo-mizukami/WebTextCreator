@@ -21,3 +21,15 @@ th {
 th, td {
 	border-top: none !important;
 }
+
+td {
+	word-break: normal;
+}
+
+.td_link {
+	width: 55px;
+}
+
+.td_tel_number {
+	width: 128px;
+}
