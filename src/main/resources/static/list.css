@@ -12,6 +12,7 @@
 }
 
 th {
+	text-align: center;
 	position: sticky;
 	top: 0;
 	z-index: 2;            /* ヘッダーを前面に */
@@ -23,10 +24,15 @@ th, td {
 }
 
 td {
+	vertical-align: middle !important;
 	word-break: normal;
 }
 
 .td_link {
+	width: 55px;
+}
+
+.td_honolific {
 	width: 55px;
 }
 

@@ -14,7 +14,11 @@ public class TelListService {
 	@Autowired
 	TelListRepository telListRepository;
 	
-	public List<TelListEntity> findAll() {
-		return telListRepository.findAll();
+	/**
+	 * 社名の昇順で全件検索
+	 * 昇順なのはアルファベットが先に取得でき、TBをリスト上部にするため
+	 */
+	public List<TelListEntity> findAllByOrderByCompanyNameAsc() {
+		return telListRepository.findAllByOrderByCompanyNameAsc();
 	}
 }

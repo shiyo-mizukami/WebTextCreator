@@ -25,7 +25,7 @@ public class TextCreatorController {
 	@GetMapping("/")
 	public String main(Model model) {
 		// 相手先情報全件をmodelにセット
-		model.addAttribute("telList", telListService.findAll());
+		model.addAttribute("telList", telListService.findAllByOrderByCompanyNameAsc());
 		return "main";
 	}
 }
