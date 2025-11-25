@@ -179,6 +179,7 @@ document.getElementById('copyBtn').addEventListener('click', ()=>{
                 input.value = val;
                 list.innerHTML='';
                 list.classList.remove('show');
+
 				// 追加：役職の状態を更新（TB判定）
 			    if (id === "company") {
 			        updatePositionOptions();
