@@ -1,0 +1,48 @@
+<!--確認ダイアログボックス-->
+<head>
+	<link rel="stylesheet" href="/dialog.css">
+</head>
+<div class="check_dialog_container" id="check_dialog_container">
+	<div class="delete_check_dialog">
+		<div class="modal-body pointer-auto">
+				<div class="text-center h5">相手先情報を削除しますか？</div>
+			<div class="modal-footer space_between">
+				<button type="button" class="btn btn-secondary" id="cancel_delete_btn">いいえ</button>
+				<form action="delete" method="post">
+					<input type="hidden" id="delete_list_id" name="listId">
+					<button type="submit" class="btn btn-primary" id="delete_btn">はい</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	// 削除確認ダイアログ
+	const dialog = document.getElementById('check_dialog_container');
+	// 「はい」ボタン
+	const deleteBtn = document.getElementById('delete_btn');
+	// 「いいえ」ボタン
+	const cancelDeleteBtn = document.getElementById('cancel_delete_btn');
+	
+	// 削除ボタンが押下されたら確認ダイアログボックスを非表示から表示に
+	document.querySelectorAll('.delete_link').forEach(link => {
+		link.addEventListener('click', (e) => {
+			e.preventDefault(); // ページ遷移防止
+			// 変更するIDをformにセット
+			document.getElementById('delete_list_id').value = link.dataset.id;
+			// display属性をblockに変え、表示させる
+			dialog.style.display = 'block';
+			panels.forEach(panel => panel.style.pointerEvents = 'none');
+		});
+	});
+	
+	// 「はい」「いいえ」ボタン押下時、ダイアログボックスを閉じる(非表示にする)
+	deleteBtn.addEventListener('click', () => {
+		dialog.style.display = 'none';
+		panels.forEach(panel => panel.style.pointerEvents = 'auto');
+	});
+	cancelDeleteBtn.addEventListener('click', () => {
+		dialog.style.display = 'none';
+		panels.forEach(panel => panel.style.pointerEvents = 'auto');
+	});
+</script>

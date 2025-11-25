@@ -21,4 +21,11 @@ public class TelListService {
 	public List<TelListEntity> findAllByOrderByCompanyNameAsc() {
 		return telListRepository.findAllByOrderByCompanyNameAsc();
 	}
+	
+	/**
+	 * 相手先リストから削除
+	 */
+	public void delete(Integer listId) {
+		telListRepository.deleteById(listId);
+	}
 }
