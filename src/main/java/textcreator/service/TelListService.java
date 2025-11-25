@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import textcreator.entity.TelListEntity;
+import textcreator.form.TelListForm;
 import textcreator.repository.TelListRepository;
 
 @Service
@@ -31,4 +32,30 @@ public class TelListService {
         if (results.size() > 20) return results.subList(0, 20);
         return results;
     }
+    
+    /**
+	 * 相手先リストから削除
+	 */
+	public void delete(Integer listId) {
+		repository.deleteById(listId);
+	}
+	
+	/**
+	 * 相手先リストにデータを一件登録
+	 */
+	public void save(TelListForm telListForm) {
+		// エンティティクラスを用意
+		TelListEntity telListEntity = new TelListEntity();
+		
+		// listIdに現在の最大値+1の値を格納
+		telListEntity.setListId(repository.findMaxByListId() + 1);
+		// FormクラスからEntityクラスに変換
+		telListEntity.setCompanyName(telListForm.getCompanyName());
+		telListEntity.setPersonName(telListForm.getPersonName());
+		telListEntity.setHonolific(telListForm.getHonolific());
+		telListEntity.setTelNumber(telListForm.getTelNumber());
+		
+		repository.save(telListEntity);
+	}
+
 }
