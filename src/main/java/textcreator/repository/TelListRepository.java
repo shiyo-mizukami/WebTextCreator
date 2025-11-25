@@ -9,9 +9,11 @@ import textcreator.entity.TelListEntity;
 
 @Repository
 public interface TelListRepository extends JpaRepository<TelListEntity, Integer> {
-	/**
-	 * 社名の昇順で全件検索
-	 * 昇順なのはアルファベットが先に取得でき、TBをリスト上部にするため
-	 */
-	public List<TelListEntity> findAllByOrderByCompanyNameAsc();
+
+    // 社名昇順で全件取得
+    List<TelListEntity> findAllByOrderByCompanyNameAsc();
+
+    // サジェスト用部分一致検索
+    List<TelListEntity> findByCompanyNameContainingAndPersonNameContainingAndTelNumberContaining(
+            String companyName, String personName, String telNumber);
 }

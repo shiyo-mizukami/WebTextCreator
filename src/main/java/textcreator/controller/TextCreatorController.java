@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import textcreator.service.TelListService;
 
@@ -31,15 +29,5 @@ public class TextCreatorController {
 		return "main";
 	}
 	
-	/**
-	 * データ削除リクエスト
-	 */
-	@PostMapping("delete")
-	public String delete(@RequestParam Integer listId, Model model) {
-		// 削除実行
-		telListService.delete(listId);
-		// 相手先情報全件をmodelにセット
-		model.addAttribute("telList", telListService.findAllByOrderByCompanyNameAsc());
-		return "redirect:/";
-	}
+	
 }
