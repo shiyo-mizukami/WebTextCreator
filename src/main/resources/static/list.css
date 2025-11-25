@@ -1,5 +1,9 @@
 @charset "UTF-8";
 
+.list_title {
+	margin-top: 0 !important;
+}
+
 .list_table {
 	display: block;
 }
@@ -29,11 +33,15 @@ td {
 }
 
 .td_link {
-	width: 55px;
+	width: 56px;
+}
+
+.delete_link {
+	color: red;
 }
 
 .td_honolific {
-	width: 55px;
+	width: 56px;
 }
 
 .td_tel_number {

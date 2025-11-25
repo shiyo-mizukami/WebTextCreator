@@ -12,16 +12,16 @@
 			</div>
 			<div class="form-group row align-items-center">
 				<label class="col-sm-2 col-form-label text-center">社名</label>
-				<div class="col-sm-10">日研トータルソーシング</div>
+				<div class="col-sm-10" id="modal_company"></div>
 
 				<label class="col-sm-2 col-form-label text-center">氏名</label>
-				<div class="col-sm-4">内海</div>
+				<div class="col-sm-4" id="modal_name"></div>
 
 				<label class="col-sm-2 col-form-label text-center">役職</label>
-				<div class="col-sm-4">ー</div>
+				<div class="col-sm-4" id="modal_position"></div>
 
 				<label class="col-sm-2 col-form-label text-center">電話番号</label>
-				<div class="col-sm-10">03-5711-6452</div>
+				<div class="col-sm-10" id="modal_phone"></div>
 			</div>
 			<div class="modal-footer"></div>
 
@@ -30,6 +30,8 @@
 				<div class="modal-header">
 					<h5 class="modal-title">変更情報入力</h5>
 				</div>
+				
+				<input type="hidden" id="edit_id">
 
 				<div class="form-group row align-items-center">
 
@@ -75,19 +77,35 @@
 </div>
 
 <script>
+	// 編集モーダル
 	const modal = document.getElementById('edit_modal');
-	//const editInput = document.getElementById('edit-input');
+	// 「編集」ボタン
 	const saveBtn = document.getElementById('save_btn');
+	// 「キャンセル」ボタン
 	const closeBtn = document.getElementById('close_btn');
+	// main.htmlで定義しているクラス(左右半分に画面を分けるためのクラス)
 	const panels = document.querySelectorAll('.panel');
+	// 選択した行(tr)の情報を格納する変数
 	let selectedRow = null;
-
+	// モーダルの変更前情報を表示する要素
+	const modalCompany = document.getElementById('modal_company');
+	const modalName = document.getElementById('modal_name');
+	const modalPosition = document.getElementById('modal_position');
+	const modalPhone = document.getElementById('modal_phone');
+	
 	// aタグクリックでモーダル表示
 	document.querySelectorAll('.open_edit_modal').forEach(link => {
 		link.addEventListener('click', (e) => {
 			e.preventDefault(); // ページ遷移防止
 			selectedRow = link.closest('tr'); // 親のtrを取得
-			//editInput.value = selectedRow.cells[1].textContent; // 2列目のデータを編集対象に
+			// モーダルの変更前情報に値を格納
+			modalCompany.textContent = selectedRow.cells[1].textContent;
+			modalName.textContent = selectedRow.cells[2].textContent;
+			modalPosition.textContent = selectedRow.cells[3].textContent;
+			modalPhone.textContent = selectedRow.cells[4].textContent;
+			// 変更するIDをformにセット
+			document.getElementById('edit_id').value = link.dataset.id;
+			// display属性をblockに変え、表示させる
 			modal.style.display = 'block';
 			panels.forEach(panel => panel.style.pointerEvents = 'none');
 		});
@@ -95,9 +113,7 @@
 
 	// 保存ボタンでデータ更新
 	saveBtn.addEventListener('click', () => {
-		if (selectedRow) {
-			selectedRow.cells[1].textContent = editInput.value;
-		}
+		
 		modal.style.display = 'none';
 	});
 
