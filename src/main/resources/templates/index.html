@@ -178,6 +178,11 @@ document.getElementById('copyBtn').addEventListener('click', ()=>{
                 input.value = val;
                 list.innerHTML='';
                 list.classList.remove('show');
+				
+				// 追加：役職の状態を更新（TB判定）
+				    if (id === "company") {
+				        updatePositionOptions();
+				    }
             });
             list.appendChild(li);
         });
@@ -204,4 +209,48 @@ document.addEventListener('click', e=>{
 document.querySelectorAll('.dropdown-menu').forEach(list=>{
     list.addEventListener('click', e=>e.stopPropagation());
 });
+
+const companyInput = document.getElementById('company');
+const positionSelect = document.getElementById('position');
+
+// 役職の候補
+const TB_OPTIONS = ["様", "さん", "主任", "上級主任", "課長", "所長"];
+const DEFAULT_OPTION = ["様"]; // TB 以外はこれだけ
+
+function updatePositionOptions() {
+    const value = companyInput.value.trim().toUpperCase();
+
+    const isTB = value.includes("TB");
+
+    // 現在の選択肢をクリア
+    positionSelect.innerHTML = "";
+
+    if (isTB) {
+        // TB → 全候補を追加・選択可能
+        TB_OPTIONS.forEach(opt => {
+            const option = document.createElement("option");
+            option.textContent = opt;
+            option.value = opt;
+            positionSelect.appendChild(option);
+        });
+
+        positionSelect.disabled = false;
+
+    } else {
+        // TB 以外 → 「様」1つだけ・選択不可
+        const option = document.createElement("option");
+        option.textContent = "様";
+        option.value = "様";
+        positionSelect.appendChild(option);
+
+        positionSelect.disabled = true;
+    }
+}
+
+// 社名入力のたびに実行
+companyInput.addEventListener("input", updatePositionOptions);
+
+// 初期表示時
+window.addEventListener("DOMContentLoaded", updatePositionOptions);
+
 </script>

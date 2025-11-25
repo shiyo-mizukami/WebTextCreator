@@ -29,7 +29,7 @@ public class TelListService {
                 companyName, personName, telNumber
             );
 
-        if (results.size() > 20) return results.subList(0, 20);
+        if (results.size() > 10) return results.subList(0, 10);
         return results;
     }
     
