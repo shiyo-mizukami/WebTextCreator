@@ -18,6 +18,15 @@ public class TelListForm {
 	
 	@NotBlank(message = "電話番号を入力してください")
 	private String telNumber;
+	
+	// 電話メモが表示されるtextarea
+	private String result;
+	
+	// こちらの状態ラジオボタン
+	private String myState;
+	
+	// 相手の対応ラジオボタン
+	private String resp;
 
 	public Integer getListId() {
 		return listId;
@@ -57,5 +66,29 @@ public class TelListForm {
 
 	public void setTelNumber(String telNumber) {
 		this.telNumber = telNumber;
+	}
+	
+	public String getResult() {
+		return result;
+	}
+
+	public void setResult(String result) {
+		this.result = result;
+	}
+
+	public String getMyState() {
+		return myState;
+	}
+
+	public void setMyState(String myState) {
+		this.myState = myState;
+	}
+
+	public String getResp() {
+		return resp;
+	}
+
+	public void setResp(String resp) {
+		this.resp = resp;
 	}
 }

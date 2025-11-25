@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import textcreator.form.TelListForm;
 import textcreator.service.TelListService;
@@ -31,6 +32,8 @@ public class TextCreatorController {
 	public String main(Model model) {
 		// 相手先情報全件をmodelにセット
 		model.addAttribute("telList", telListService.findAllByOrderByCompanyNameAsc());
+		
+		model.addAttribute("input", new TelListForm());
 		return "main";
 	}
 
@@ -51,8 +54,17 @@ public class TextCreatorController {
 	 */
 	@PostMapping("regist")
 	public String resist(@ModelAttribute("regist") TelListForm telListForm,
+			RedirectAttributes redirect,
 			Model model) {
+		// DBに登録
 		telListService.save(telListForm);
+		
+		// textareaの文章を保存、描画
+		redirect.addFlashAttribute("result", telListForm.getResult());
+		redirect.addFlashAttribute("companyName", telListForm.getCompanyName());
+		redirect.addFlashAttribute("personName", telListForm.getPersonName());
+		redirect.addFlashAttribute("honolific", telListForm.getHonolific());
+		redirect.addFlashAttribute("telNumber", telListForm.getTelNumber());
 		
 		// 相手先情報全件をmodelにセット
 		model.addAttribute("telList", telListService.findAllByOrderByCompanyNameAsc());
