@@ -3,21 +3,23 @@
         <!-- 入力欄 -->
         <div class="form-group row align-items-center">
             <label class="col-sm-2 col-form-label">社名</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control form-control-sm input-mid" id="company">
+            <div class="col-sm-10 dropdown position-relative">
+                <input type="text" class="form-control form-control-sm input-mid dropdown-toggle" id="company" autocomplete="off" data-bs-toggle="dropdown">
+                <ul class="dropdown-menu w-100" id="companyList"></ul>
             </div>
         </div>
 
         <div class="form-group row align-items-center">
             <label class="col-sm-2 col-form-label">氏名</label>
-            <div class="col-sm-4">
-                <input type="text" class="form-control form-control-sm input-small" id="name">
+            <div class="col-sm-4 dropdown position-relative">
+                <input type="text" class="form-control form-control-sm input-small dropdown-toggle" id="name" autocomplete="off" data-bs-toggle="dropdown">
+                <ul class="dropdown-menu w-100" id="nameList"></ul>
             </div>
             <label class="col-sm-2 col-form-label">役職</label>
             <div class="col-sm-4">
                 <select class="form-control form-control-sm" id="position">
-					<option value="" selected>選択してください</option>
-					<option>様</option>
+                    <option value="" selected>選択してください</option>
+                    <option>様</option>
                     <option>さん</option>
                     <option>主任</option>
                     <option>上級主任</option>
@@ -29,9 +31,10 @@
 
         <div class="form-group row align-items-center">
             <label class="col-sm-2 col-form-label">電話番号</label>
-            <div class="col-sm-10 d-flex align-items-center">
-                <input type="text" class="form-control form-control-sm input-mid" id="phone">
-                <button type="button" class="btn btn-primary btn-sm ml-5" id ="addListBtn">リストに登録</button>
+            <div class="col-sm-10 dropdown position-relative d-flex align-items-center">
+                <input type="text" class="form-control form-control-sm input-mid dropdown-toggle" id="phone" autocomplete="off" data-bs-toggle="dropdown">
+                <ul class="dropdown-menu w-100" id="phoneList"></ul>
+                <button type="button" class="btn btn-primary btn-sm ml-5" id="addListBtn">リストに登録</button>
             </div>
         </div>
 
@@ -67,81 +70,138 @@
 </div>
 
 <script>
-    const createBtn = document.getElementById('createBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const copyBtn = document.getElementById('copyBtn');
-    const resultArea = document.getElementById('result');
+// ラジオ選択解除
+function makeRadioToggleable(radios) {
+    radios.forEach(radio => {
+        radio.addEventListener('click', function() {
+            if (radio.wasChecked) {
+                radio.checked = false;
+                radio.wasChecked = false;
+            } else {
+                radios.forEach(r => r.wasChecked = false);
+                radio.wasChecked = radio.checked;
+            }
+        });
+    });
+}
+makeRadioToggleable(document.querySelectorAll('input[name="myState"]'));
+makeRadioToggleable(document.querySelectorAll('input[name="resp"]'));
 
-    // ラジオボタンを選択解除可能にする
-    function makeRadioToggleable(radios) {
-        radios.forEach(radio => {
-            radio.addEventListener('click', function() {
-                if (radio.wasChecked) {
-                    radio.checked = false;
-                    radio.wasChecked = false;
-                } else {
-                    radios.forEach(r => r.wasChecked = false);
-                    radio.wasChecked = radio.checked;
-                }
+// リスト登録ボタン
+document.getElementById('addListBtn').addEventListener('click', (e)=>{
+    e.preventDefault(); e.stopPropagation();
+    const company = document.getElementById('company').value.trim();
+    const name = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    if(!company || !name || !phone){
+        alert("相手先情報を登録しました."); 
+        return;
+    }
+    alert("すでに登録されています.");
+});
+
+// 文章作成
+document.getElementById('createBtn').addEventListener('click', ()=>{
+    const company = document.getElementById('company').value;
+    const name = document.getElementById('name').value;
+    const position = document.getElementById('position').value;
+    const phone = document.getElementById('phone').value;
+    const myState = document.querySelector('input[name="myState"]:checked')?.value||'';
+    const resp = document.querySelector('input[name="resp"]:checked')?.value||'';
+
+    const missing = [];
+    if(!company) missing.push('社名');
+    if(!name) missing.push('氏名');
+    if(!position) missing.push('役職');
+    if(!phone) missing.push('電話番号');
+    if(missing.length>0){alert(missing.join('、')+'を入力してください.'); return;}
+
+    const now = new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('result').value = 
+`【相手先】 ${company} ${name} ${position} ${now}
+【電話番号】 ${phone}
+【内容】${myState||resp?'\n':''}${myState?myState+'の旨をお伝えしたところ、':''}${resp?resp+'とのことでした。':''}`;
+});
+
+// リセット
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+    document.getElementById('textForm').reset();
+    document.getElementById('result').value='';
+});
+
+// コピー
+document.getElementById('copyBtn').addEventListener('click', ()=>{
+    const resultArea = document.getElementById('result');
+    resultArea.select();
+    document.execCommand('copy');
+});
+
+// -------------------
+// サジェスト機能（1項目のみ表示、他は閉じる）
+// -------------------
+['company','name','phone'].forEach(id=>{
+    const input = document.getElementById(id);
+    const list = document.getElementById(id+'List');
+
+    const fetchAndShow = async ()=>{
+        // 他のサジェストを閉じる
+        document.querySelectorAll('.dropdown-menu').forEach(l=>{
+            if(l!==list){
+                l.innerHTML='';
+                l.classList.remove('show');
+            }
+        });
+
+        list.innerHTML='';
+
+        const query = {};
+        if(document.getElementById('company').value.trim() && id!=='company')
+            query.companyName = document.getElementById('company').value.trim();
+        if(document.getElementById('name').value.trim() && id!=='name')
+            query.personName = document.getElementById('name').value.trim();
+        if(document.getElementById('phone').value.trim() && id!=='phone')
+            query.telNumber = document.getElementById('phone').value.trim();
+
+        if(input.value.trim()!=='') 
+            query[id==='company'?'companyName':id==='name'?'personName':'telNumber'] = input.value.trim();
+
+        const res = await fetch(`/api/tellist?${new URLSearchParams(query).toString()}`);
+        const results = await res.json();
+        const values = [...new Set(results.map(r=>id==='company'?r.companyName:id==='name'?r.personName:r.telNumber))];
+
+        values.forEach(val=>{
+            const li = document.createElement('button');
+            li.type='button';
+            li.className='dropdown-item';
+            li.textContent = val;
+            li.addEventListener('click', ()=>{
+                input.value = val;
+                list.innerHTML='';
+                list.classList.remove('show');
             });
+            list.appendChild(li);
+        });
+
+        if(values.length>0) list.classList.add('show');
+        else list.classList.remove('show');
+    };
+
+    input.addEventListener('input', fetchAndShow);
+    input.addEventListener('focus', fetchAndShow);
+});
+
+// クリック外で全て閉じる
+document.addEventListener('click', e=>{
+    if(!e.target.closest('.dropdown')){
+        document.querySelectorAll('.dropdown-menu').forEach(list=>{
+            list.innerHTML='';
+            list.classList.remove('show');
         });
     }
+});
 
-    makeRadioToggleable(document.querySelectorAll('input[name="myState"]'));
-    makeRadioToggleable(document.querySelectorAll('input[name="resp"]'));
-	
-	const addListBtn = document.getElementById('addListBtn');
-	    addListBtn.addEventListener('click', (event) => {
-	        event.preventDefault();
-	        event.stopPropagation();
-
-	        const company = document.getElementById('company').value.trim();
-	        const name    = document.getElementById('name').value.trim();
-	        const phone   = document.getElementById('phone').value.trim();
-
-	        if (!company || !name || !phone) {
-	            alert("相手先情報を登録しました。");
-	            return;
-	        }
-
-	        alert("すでに登録されています。");
-	    });
-
-    createBtn.addEventListener('click', () => {
-        const company = document.getElementById('company').value;
-        const name = document.getElementById('name').value;
-        const position = document.getElementById('position').value;
-        const phone = document.getElementById('phone').value;
-        const myState = document.querySelector('input[name="myState"]:checked')?.value || '';
-        const resp = document.querySelector('input[name="resp"]:checked')?.value || '';
-		
-		// 必須チェック（ラジオは除く）
-		    const missingFields = [];
-		    if (!company) missingFields.push('社名');
-		    if (!name) missingFields.push('氏名');
-		    if (!position) missingFields.push('役職');
-		    if (!phone) missingFields.push('電話番号');
-
-		    if (missingFields.length > 0) {
-		        alert(missingFields.join('、') + 'を入力してください。');
-		        return; // 未入力がある場合は処理中断
-		    }
-
-        const nowTime = new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
-
-        resultArea.value = 
-`【相手先】 ${company} ${name} ${position} ${nowTime}
-【電話番号】 ${phone}
-【内容】${myState || resp ? '\n' : ''}${myState ? myState + 'の旨をお伝えしたところ、' : ''}${resp ? resp + 'とのことでした。' : ''}`;
-    });
-
-    resetBtn.addEventListener('click', () => {
-        document.getElementById('textForm').reset();
-        resultArea.value = '';
-    });
-
-    copyBtn.addEventListener('click', () => {
-        resultArea.select();
-        document.execCommand('copy');
-    });
+// ドロップダウン内クリックは閉じない
+document.querySelectorAll('.dropdown-menu').forEach(list=>{
+    list.addEventListener('click', e=>e.stopPropagation());
+});
 </script>
