@@ -66,6 +66,7 @@ public class TextCreatorController {
 			} catch (Exception e) {
 				// 登録処理失敗の場合
 				redirect.addFlashAttribute("registResult", 2);
+				e.printStackTrace();
 			}
 		} else {
 			// 登録処理が自動の場合
@@ -83,7 +84,6 @@ public class TextCreatorController {
 		redirect.addFlashAttribute("result", telListForm.getResult());
 		redirect.addFlashAttribute("companyName", telListForm.getCompanyName());
 		redirect.addFlashAttribute("personName", telListForm.getPersonName());
-		redirect.addFlashAttribute("honolific", telListForm.getHonolific());
 		redirect.addFlashAttribute("telNumber", telListForm.getTelNumber());
 		
 		// 相手先情報全件をmodelにセット

@@ -140,8 +140,26 @@ document.getElementById('createBtn').addEventListener('click', ()=>{
 
 // リセット
 document.getElementById('resetBtn').addEventListener('click', ()=>{
-    document.getElementById('textForm').reset();// 登録処理など入力した後にリセットすると空になるのではなく入力した文字が入る
-    document.getElementById('result').value='';
+	// テキストボックスを空白に
+	document.getElementById('company').value='';
+	document.getElementById('name').value='';
+	document.getElementById('phone').value='';
+	document.getElementById('result').value='';
+	
+	// 役職セレクトボックスを初期化
+	const positionSelect = document.getElementById('position');
+	// 現在の選択肢をクリア
+	positionSelect.innerHTML = "";
+	// TB 以外 → 「様」1つだけ・選択不可
+	const option = document.createElement("option");
+	option.textContent = "様";
+	option.value = "様";
+	positionSelect.appendChild(option);
+	positionSelect.disabled = true;
+	
+	// ラジオボタンの選択を解除
+	document.querySelectorAll('input[name="myState"]').forEach(el => el.checked = false);
+	document.querySelectorAll('input[name="resp"]').forEach(el => el.checked = false);
 });
 
 // コピー
@@ -227,6 +245,8 @@ document.querySelectorAll('.dropdown-menu').forEach(list=>{
 
 const companyInput = document.getElementById('company');
 const positionSelect = document.getElementById('position');
+// hidden inputを準備（最初は存在しないので後で追加）
+let hiddenHonolific = null;
 
 // 役職の候補
 const TB_OPTIONS = ["様", "さん", "主任", "上級主任", "課長", "所長"];
@@ -251,6 +271,12 @@ function updatePositionOptions() {
 
         positionSelect.disabled = false;
 
+		// hiddenがあれば削除
+        if (hiddenHonolific) {
+            hiddenHonolific.remove();
+            hiddenHonolific = null;
+        }
+
     } else {
         // TB 以外 → 「様」1つだけ・選択不可
         const option = document.createElement("option");
@@ -259,6 +285,15 @@ function updatePositionOptions() {
         positionSelect.appendChild(option);
 
         positionSelect.disabled = true;
+
+		// hidden inputを追加（まだなければ）
+	    if (!hiddenHonolific) {
+	        hiddenHonolific = document.createElement("input");
+	        hiddenHonolific.type = "hidden";
+	        hiddenHonolific.name = "honolific";
+	        hiddenHonolific.value = "ー"; // DB登録用の値
+	        positionSelect.parentNode.appendChild(hiddenHonolific);
+	    }
     }
 }
 

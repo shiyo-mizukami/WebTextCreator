@@ -47,6 +47,15 @@ public class TelListService {
 		// エンティティクラスを用意
 		TelListEntity telListEntity = new TelListEntity();
 		
+		// 役職が空白か - の場合 ーを格納する
+		if(telListForm.getHonolific().equals("") | telListForm.getHonolific().equals("-") | telListForm.getHonolific() == null) {
+			telListForm.setHonolific("ー");
+		}
+		// 電話番号が空白か - の場合 ーを格納する
+		if(telListForm.getTelNumber().equals("") | telListForm.getTelNumber().equals("-") | telListForm.getTelNumber() == null) {
+			telListForm.setTelNumber("ー");
+		}
+		
 		// listIdに現在の最大値+1の値を格納
 		telListEntity.setListId(repository.findMaxByListId() + 1);
 		// FormクラスからEntityクラスに変換
