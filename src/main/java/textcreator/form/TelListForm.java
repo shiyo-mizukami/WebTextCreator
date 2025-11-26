@@ -22,11 +22,8 @@ public class TelListForm {
 	// 電話メモが表示されるtextarea
 	private String result;
 	
-	// こちらの状態ラジオボタン
-	private String myState;
-	
-	// 相手の対応ラジオボタン
-	private String resp;
+	// 登録処理の方法を格納 1→手動、2→自動
+	private Integer registMode;
 
 	public Integer getListId() {
 		return listId;
@@ -75,20 +72,12 @@ public class TelListForm {
 	public void setResult(String result) {
 		this.result = result;
 	}
-
-	public String getMyState() {
-		return myState;
+	
+	public Integer getRegistMode() {
+		return registMode;
 	}
 
-	public void setMyState(String myState) {
-		this.myState = myState;
-	}
-
-	public String getResp() {
-		return resp;
-	}
-
-	public void setResp(String resp) {
-		this.resp = resp;
+	public void setRegistMode(Integer registMode) {
+		this.registMode = registMode;
 	}
 }

@@ -18,7 +18,7 @@
             <label class="col-sm-2 col-form-label">役職</label>
             <div class="col-sm-4">
                 <select class="form-control form-control-sm" id="position" name="honolific">
-                    <option th:text="${honolific}" selected>選択してください</option>
+                    <option value="" selected>選択してください</option>
                     <option>様</option>
                     <option>さん</option>
                     <option>主任</option>
@@ -36,6 +36,8 @@
                 <ul class="dropdown-menu w-100" id="phoneList"></ul>
 				<!-- リストに登録ボタン -->
                 <button type="submit" class="btn btn-primary btn-sm ml-5" id="addListBtn">リストに登録</button>
+				<!-- 登録ボタンで登録した時に結果を格納 1→登録成功、2→登録失敗 -->
+				<input type="hidden" th:value="${registResult}" id="registResult">
             </div>
         </div>
 
@@ -67,6 +69,9 @@
         <div class="d-flex justify-content-end mt-1">
             <button type="button" class="btn btn-secondary btn-sm" id="resetBtn" style="min-width:80px;">リセット</button>
         </div>
+
+		<!--	 登録処理が自動か手動か 1→手動、2→自動 -->
+		<input type="hidden" th:value="${registMode}" id="registMode" name="registMode">
     </form>
 </div>
 
@@ -89,17 +94,23 @@ makeRadioToggleable(document.querySelectorAll('input[name="myState"]'));
 makeRadioToggleable(document.querySelectorAll('input[name="resp"]'));
 
 // リスト登録ボタン
-/*document.getElementById('addListBtn').addEventListener('click', (e)=>{
-    e.preventDefault(); e.stopPropagation();
-    const company = document.getElementById('company').value.trim();
-    const name = document.getElementById('name').value.trim();
-    const phone = document.getElementById('phone').value.trim();
-    if(!company || !name || !phone){
-        alert("相手先情報を登録しました."); 
+document.getElementById('addListBtn').addEventListener('click', (e)=>{
+	document.getElementById('registMode').value = 1;
+});
+
+window.addEventListener('load', () =>{
+	const registResult = document.getElementById('registResult').value;
+	if(registResult == 1){
+		// 登録処理成功
+        alert("相手先情報を登録しました"); 
         return;
-    }
-    alert("すでに登録されています.");
-});*/
+    } else if (registResult == 2) {
+		// 登録処理失敗
+		alert("すでに登録されています");
+		return;
+	}
+	return;
+})
 
 // 文章作成
 document.getElementById('createBtn').addEventListener('click', ()=>{
@@ -122,11 +133,14 @@ document.getElementById('createBtn').addEventListener('click', ()=>{
 `【相手先】 ${company} ${name} ${position} ${now}
 【電話番号】 ${phone}
 【内容】${myState||resp?'\n':''}${myState?myState+'の旨をお伝えしたところ、':''}${resp?resp+'とのことでした。':''}`;
+
+	// 登録処理を自動に設定
+	document.getElementById('registMode').value = 2;
 });
 
 // リセット
 document.getElementById('resetBtn').addEventListener('click', ()=>{
-    document.getElementById('textForm').reset();
+    document.getElementById('textForm').reset();// 登録処理など入力した後にリセットすると空になるのではなく入力した文字が入る
     document.getElementById('result').value='';
 });
 

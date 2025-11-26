@@ -54,12 +54,32 @@ public class TextCreatorController {
 	 */
 	@PostMapping("regist")
 	public String resist(@ModelAttribute("regist") TelListForm telListForm,
-			RedirectAttributes redirect,
-			Model model) {
-		// DBに登録
-		telListService.save(telListForm);
+			RedirectAttributes redirect, Model model) {
+		//TB以外登録時、役職が空になる
+		if(telListForm.getRegistMode() == 1) {
+			// 登録処理が手動の場合
+			try {
+				// DBに登録
+				telListService.save(telListForm);
+				// 登録処理成功の場合
+				redirect.addFlashAttribute("registResult", 1);
+			} catch (Exception e) {
+				// 登録処理失敗の場合
+				redirect.addFlashAttribute("registResult", 2);
+			}
+		} else {
+			// 登録処理が自動の場合
+			try {
+				// DBに登録
+				telListService.save(telListForm);
+			} catch (Exception e) {
+			} finally {
+				// 失敗でも成功でも0
+				redirect.addFlashAttribute("registResult", 0);
+			}
+		}
 		
-		// textareaの文章を保存、描画
+		// 入力値を保存、描画
 		redirect.addFlashAttribute("result", telListForm.getResult());
 		redirect.addFlashAttribute("companyName", telListForm.getCompanyName());
 		redirect.addFlashAttribute("personName", telListForm.getPersonName());
