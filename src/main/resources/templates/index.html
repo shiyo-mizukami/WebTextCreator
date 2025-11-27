@@ -107,9 +107,6 @@ document.getElementById('addListBtn').addEventListener('click', (e)=>{
 	// ★追加：電話番号が全角ハイフンのみかどうか
 	const isFullWidthHyphenOnly = /^[ー]+$/.test(phone);
 
-	// 登録処理を自動に設定
-	document.getElementById('registMode').value = 2;
-
 	// --- 未入力チェック ---
 	const missing = [];
 	if (!company) missing.push('社名');
