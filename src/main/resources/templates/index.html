@@ -113,30 +113,52 @@ window.addEventListener('load', () =>{
 })
 
 // 文章作成
-document.getElementById('createBtn').addEventListener('click', ()=>{
+document.getElementById('createBtn').addEventListener('click', () => {
     const company = document.getElementById('company').value;
     const name = document.getElementById('name').value;
     const position = document.getElementById('position').value;
     const phone = document.getElementById('phone').value;
-    const myState = document.querySelector('input[name="myState"]:checked')?.value||'';
-    const resp = document.querySelector('input[name="resp"]:checked')?.value||'';
 
+    const myState = document.querySelector('input[name="myState"]:checked')?.value || '';
+    const resp = document.querySelector('input[name="resp"]:checked')?.value || '';
+
+    // 会社名に TB が含まれるか（大文字小文字対応）
+    const isTB = company.toUpperCase().includes("TB");
+	
+	// ★追加：電話番号が全角ハイフンのみかどうか
+	    const isFullWidthHyphenOnly = /^[ー]+$/.test(phone);
+
+    // --- 未入力チェック ---
     const missing = [];
-    if(!company) missing.push('社名');
-    if(!name) missing.push('氏名');
-    if(!position) missing.push('役職');
-    if(!phone) missing.push('電話番号');
-    if(missing.length>0){alert(missing.join('、')+'を入力してください.'); return;}
+    if (!company) missing.push('社名');
+    if (!name) missing.push('氏名');
+    if (!position) missing.push('役職');
 
-    const now = new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});
-    document.getElementById('result').value = 
+    // TB以外 → 電話番号必須
+	// ★修正：TB以外 → 全角ハイフンのみ も 未入力扱い
+	    if (!isTB && (!phone || isFullWidthHyphenOnly)) {
+	        missing.push('電話番号');
+	    }
+
+    if (missing.length > 0) {
+        alert(missing.join('、') + 'を入力してください.');
+        return;
+    }
+
+    // --- テキストエリアへの反映 ---
+    const now = new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+
+	// ★変更：全角ハイフンだけのときは出力しない
+	    const phoneLine = (phone && !isFullWidthHyphenOnly) ? `【電話番号】 ${phone}\n` : "";
+
+    document.getElementById('result').value =
 `【相手先】 ${company} ${name} ${position} ${now}
-【電話番号】 ${phone}
-【内容】${myState||resp?'\n':''}${myState?myState+'の旨をお伝えしたところ、':''}${resp?resp+'とのことでした。':''}`;
+${phoneLine}【内容】${myState || resp ? '\n' : ''}${myState ? myState + 'の旨をお伝えしたところ、' : ''}${resp ? resp + 'とのことでした。' : ''}`;
 
-	// 登録処理を自動に設定
-	document.getElementById('registMode').value = 2;
+    // 登録処理を自動に設定
+    document.getElementById('registMode').value = 2;
 });
+
 
 // リセット
 document.getElementById('resetBtn').addEventListener('click', ()=>{
