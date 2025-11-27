@@ -46,17 +46,7 @@
 	    dialog.style.display = 'none';
 	    panels.forEach(panel => panel.style.pointerEvents = 'auto');
 	});
-
-
-	// 編集の「変更」ボタン押下時
-	saveBtn.addEventListener('click', () => {
-	    showDialog('相手先情報を変更しますか？', () => {
-	        // 編集フォーム送信
-	        const form = document.querySelector('form[action="edit"]');
-	        form.submit();
-	    });
-	});
-
+	
 	// 削除リンククリック時
 	document.querySelectorAll('.delete_link').forEach(link => {
 	    link.addEventListener('click', (e) => {

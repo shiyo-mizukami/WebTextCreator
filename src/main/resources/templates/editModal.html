@@ -31,7 +31,7 @@
 					<h5 class="modal-title">変更情報入力</h5>
 				</div>
 				<!--変更するデータのlist_idをセット-->
-				<input type="hidden" id="edit_id">
+				<input type="hidden" id="edit_id" name="listId">
 
 				<div class="form-group row align-items-center">
 
@@ -111,14 +111,71 @@
 		});
 	});
 
-	// 保存ボタンでデータ更新
+	// 変更ボタンでデータ更新(確認ダイアログで確認)
 	saveBtn.addEventListener('click', () => {
-		
+		// 入力チェック
+		const company = document.getElementById('edit_company').value;
+		const name = document.getElementById('edit_name').value;
+		const position = document.getElementById('edit_position').value;
+		const phone = document.getElementById('edit_phone').value;
+
+		// 会社名に TB が含まれるか（大文字小文字対応）
+		const isTB = company.toUpperCase().includes("TB");
+
+		// ★追加：電話番号が全角ハイフンのみかどうか
+		const isFullWidthHyphenOnly = /^[ー]+$/.test(phone);
+			
+		// 登録処理を自動に設定
+		document.getElementById('registMode').value = 2;
+
+		// --- 未入力チェック ---
+		const missing = [];
+		if (!company) missing.push('社名');
+		if (!name) missing.push('氏名');
+		if (!position) missing.push('役職');
+
+		// TB以外 → 電話番号必須
+		// ★修正：TB以外 → 全角ハイフンのみ も 未入力扱い
+	    if (!isTB && (!phone || isFullWidthHyphenOnly)) {
+	        missing.push('電話番号');
+	    }
+
+		if (missing.length > 0) {
+		    alert(missing.join('、') + 'を入力してください.');
+			e.preventDefault();
+		    return;
+		}
+		// 確認ダイアログ
+		showDialog('相手先情報を変更しますか？', () => {
+        		// 編集フォーム送信
+	        const form = document.querySelector('form[action="edit"]');
+	        form.submit();
+	    });
 		modal.style.display = 'none';
 	});
 
 	// 閉じるボタン
 	closeBtn.addEventListener('click', () => {
+		// 入力値を初期化
+		document.getElementById('edit_company').value='';
+		document.getElementById('edit_name').value='';
+		document.getElementById('edit_phone').value='';
+		// 現在の選択肢をクリア
+		editPositionSelect.innerHTML = "";
+		const editOption = document.createElement("option");
+
+        editOption.textContent = "ー";
+        editOption.value = "ー";
+        editPositionSelect.appendChild(editOption);
+        editPositionSelect.disabled = true;
+		// hidden inputを追加（まだなければ）
+	    if (!editHiddenHonolific) {
+	        editHiddenHonolific = document.createElement("input");
+	        editHiddenHonolific.type = "hidden";
+	        editHiddenHonolific.name = "honolific";
+	        editHiddenHonolific.value = "ー"; // DB登録用の値
+	        editPositionSelect.parentNode.appendChild(editHiddenHonolific);
+	    }
 		modal.style.display = 'none';
 		panels.forEach(panel => panel.style.pointerEvents = 'auto');
 	});

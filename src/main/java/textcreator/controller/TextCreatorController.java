@@ -97,9 +97,7 @@ public class TextCreatorController {
 	public String edit(@ModelAttribute TelListForm telListForm,
 			RedirectAttributes redirect, Model model) {
 		// 変更処理
-		
-		// エラー回避
-//		redirect.addFlashAttribute("registResult", 0);
+		telListService.save(telListForm);
 		// 相手先情報全件をmodelにセット
 		model.addAttribute("telList", telListService.findAllByOrderByCompanyNameAsc());
 		return "redirect:/";

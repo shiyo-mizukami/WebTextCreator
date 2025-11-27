@@ -3,12 +3,14 @@ package textcreator.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import textcreator.entity.TelListEntity;
 import textcreator.form.TelListForm;
 import textcreator.repository.TelListRepository;
 
 @Service
+@Transactional
 public class TelListService {
 
     private final TelListRepository repository;
@@ -56,8 +58,13 @@ public class TelListService {
 			telListForm.setTelNumber("ー");
 		}
 		
-		// listIdに現在の最大値+1の値を格納
-		telListEntity.setListId(repository.findMaxByListId() + 1);
+		if(telListForm.getListId() == null) {
+			// 登録の場合listIdに現在の最大値+1の値を格納
+			telListEntity.setListId(repository.findMaxByListId() + 1);
+		} else {
+			// 編集の場合Formクラスからlist_idを取得
+			telListEntity.setListId(telListForm.getListId());
+		}
 		// FormクラスからEntityクラスに変換
 		telListEntity.setCompanyName(telListForm.getCompanyName());
 		telListEntity.setPersonName(telListForm.getPersonName());
