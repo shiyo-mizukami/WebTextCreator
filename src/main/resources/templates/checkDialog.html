@@ -3,46 +3,78 @@
 	<link rel="stylesheet" href="/dialog.css">
 </head>
 <div class="check_dialog_container" id="check_dialog_container">
-	<div class="delete_check_dialog">
+	<div class="check_dialog_body">
 		<div class="modal-body pointer-auto">
-				<div class="text-center h5">相手先情報を削除しますか？</div>
+				<div class="text-center h5" id="dialog_message">確認メッセージ</div>
 			<div class="modal-footer space_between">
-				<button type="button" class="btn btn-secondary" id="cancel_delete_btn">いいえ</button>
-				<form action="delete" method="post">
-					<input type="hidden" id="delete_list_id" name="listId">
-					<button type="submit" class="btn btn-primary" id="delete_btn">はい</button>
-				</form>
+				<button type="button" class="btn btn-secondary" id="cancel_btn">いいえ</button>
+				<button type="button" class="btn btn-primary" id="confirm_btn">はい</button>
 			</div>
 		</div>
 	</div>
 </div>
 <script>
-	// 削除確認ダイアログ
+	// 確認ダイアログ
 	const dialog = document.getElementById('check_dialog_container');
+	// 確認メッセージ
+	const dialogMessage = document.getElementById('dialog_message');
 	// 「はい」ボタン
-	const deleteBtn = document.getElementById('delete_btn');
+	const confirmBtn = document.getElementById('confirm_btn');
 	// 「いいえ」ボタン
-	const cancelDeleteBtn = document.getElementById('cancel_delete_btn');
-	
-	// 削除ボタンが押下されたら確認ダイアログボックスを非表示から表示に
+	const cancelBtn = document.getElementById('cancel_btn');
+	let confirmAction = null; // 「はい」押下時の処理を保持
+
+	// 共通ダイアログ表示関数
+	function showDialog(message, onConfirm) {
+		// メッセージを格納
+	    dialogMessage.textContent = message;
+		// 確認
+	    confirmAction = onConfirm;
+	    dialog.style.display = 'block';
+	    panels.forEach(panel => panel.style.pointerEvents = 'none');
+	}
+
+	// 「はい」ボタン押下時
+	confirmBtn.addEventListener('click', () => {
+	    if (confirmAction) confirmAction();
+	    dialog.style.display = 'none';
+	    panels.forEach(panel => panel.style.pointerEvents = 'auto');
+	});
+
+	// 「いいえ」ボタン押下時
+	cancelBtn.addEventListener('click', () => {
+	    dialog.style.display = 'none';
+	    panels.forEach(panel => panel.style.pointerEvents = 'auto');
+	});
+
+
+	// 編集の「変更」ボタン押下時
+	saveBtn.addEventListener('click', () => {
+	    showDialog('相手先情報を変更しますか？', () => {
+	        // 編集フォーム送信
+	        const form = document.querySelector('form[action="edit"]');
+	        form.submit();
+	    });
+	});
+
+	// 削除リンククリック時
 	document.querySelectorAll('.delete_link').forEach(link => {
-		link.addEventListener('click', (e) => {
-			e.preventDefault(); // ページ遷移防止
-			// 変更するIDをformにセット
-			document.getElementById('delete_list_id').value = link.dataset.id;
-			// display属性をblockに変え、表示させる
-			dialog.style.display = 'block';
-			panels.forEach(panel => panel.style.pointerEvents = 'none');
-		});
-	});
-	
-	// 「はい」「いいえ」ボタン押下時、ダイアログボックスを閉じる(非表示にする)
-	deleteBtn.addEventListener('click', () => {
-		dialog.style.display = 'none';
-		panels.forEach(panel => panel.style.pointerEvents = 'auto');
-	});
-	cancelDeleteBtn.addEventListener('click', () => {
-		dialog.style.display = 'none';
-		panels.forEach(panel => panel.style.pointerEvents = 'auto');
+	    link.addEventListener('click', (e) => {
+	        e.preventDefault();
+	        const id = link.dataset.id;
+	        showDialog('相手先情報を削除しますか？', () => {
+	            // 削除処理（フォーム送信 or Ajax）
+	            const form = document.createElement('form');
+	            form.method = 'post';
+	            form.action = 'delete';
+	            const input = document.createElement('input');
+	            input.type = 'hidden';
+	            input.name = 'listId';
+	            input.value = id;
+	            form.appendChild(input);
+	            document.body.appendChild(form);
+	            form.submit();
+	        });
+	    });
 	});
 </script>

@@ -26,29 +26,29 @@
 			<div class="modal-footer"></div>
 
 			<!-- 入力欄 -->
-			<form>
+			<form action="edit" method="post">
 				<div class="modal-header">
 					<h5 class="modal-title">変更情報入力</h5>
 				</div>
-				
+				<!--変更するデータのlist_idをセット-->
 				<input type="hidden" id="edit_id">
 
 				<div class="form-group row align-items-center">
 
 					<label class="col-sm-2 col-form-label text-center">社名</label>
 					<div class="col-sm-10">
-						<input type="text" class="form-control form-control-sm input-mid" id="edit_company">
+						<input type="text" class="form-control form-control-sm input-mid" id="edit_company" name="companyName">
 					</div>
 				</div>
 
 				<div class="form-group row align-items-center">
 					<label class="col-sm-2 col-form-label text-center">氏名</label>
 					<div class="col-sm-4">
-						<input type="text" class="form-control form-control-sm input-small" id="edit_name">
+						<input type="text" class="form-control form-control-sm input-small" id="edit_name" name="personName">
 					</div>
 					<label class="col-sm-2 col-form-label text-center">役職</label>
 					<div class="col-sm-4">
-						<select class="form-control form-control-sm" id="edit_position">
+						<select class="form-control form-control-sm" id="edit_position" name="honolific">
 							<option value="" selected>選択してください</option>
 							<option>ー</option>
 							<option>さん</option>
@@ -63,7 +63,7 @@
 				<div class="form-group row align-items-center">
 					<label class="col-sm-2 col-form-label text-center">電話番号</label>
 					<div class="col-sm-10">
-						<input type="text" class="form-control form-control-sm input-mid" id="edit_phone">
+						<input type="text" class="form-control form-control-sm input-mid" id="edit_phone" name="telNumber">
 					</div>
 				</div>
 			</form>
@@ -123,4 +123,63 @@
 		panels.forEach(panel => panel.style.pointerEvents = 'auto');
 	});
 
+	// 役職セレクトボックス
+	const editCompanyInput = document.getElementById('edit_company');
+	const editPositionSelect = document.getElementById('edit_position');
+	// hidden inputを準備（最初は存在しないので後で追加）
+	let editHiddenHonolific = null;
+
+	// 役職の候補
+	const TB_EDIT_OPTIONS = ["様", "さん", "主任", "上級主任", "課長", "所長"];
+
+	function updateEditPositionOptions() {
+	    const editValue = editCompanyInput.value.trim().toUpperCase();
+
+	    const editIsTB = editValue.includes("TB");
+
+	    // 現在の選択肢をクリア
+	    editPositionSelect.innerHTML = "";
+
+	    if (editIsTB) {
+	        // TB → 全候補を追加・選択可能
+	        TB_EDIT_OPTIONS.forEach(opt => {
+	            const editOption = document.createElement("option");
+	            editOption.textContent = opt;
+	            editOption.value = opt;
+	            editPositionSelect.appendChild(editOption);
+	        });
+
+	        editPositionSelect.disabled = false;
+
+			// hiddenがあれば削除
+	        if (editHiddenHonolific) {
+	            editHiddenHonolific.remove();
+	            editHiddenHonolific = null;
+	        }
+
+	    } else {
+	        // TB 以外 → 「ー」1つだけ・選択不可
+	        const editOption = document.createElement("option");
+	        editOption.textContent = "ー";
+	        editOption.value = "ー";
+	        editPositionSelect.appendChild(editOption);
+
+	        editPositionSelect.disabled = true;
+
+			// hidden inputを追加（まだなければ）
+		    if (!editHiddenHonolific) {
+		        editHiddenHonolific = document.createElement("input");
+		        editHiddenHonolific.type = "hidden";
+		        editHiddenHonolific.name = "honolific";
+		        editHiddenHonolific.value = "ー"; // DB登録用の値
+		        editPositionSelect.parentNode.appendChild(editHiddenHonolific);
+		    }
+	    }
+	}
+
+	// 社名入力のたびに実行
+	editCompanyInput.addEventListener("input", updateEditPositionOptions);
+
+	// 初期表示時
+	window.addEventListener("DOMContentLoaded", updateEditPositionOptions);
 </script>

@@ -10,7 +10,7 @@
 	z-index: 2;
 }
 
-.delete_check_dialog {
+.check_dialog_body {
 	background: #fff;
 	margin: 50px auto;
 	padding: 20px;

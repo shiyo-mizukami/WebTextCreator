@@ -95,7 +95,38 @@ makeRadioToggleable(document.querySelectorAll('input[name="resp"]'));
 
 // リスト登録ボタン
 document.getElementById('addListBtn').addEventListener('click', (e)=>{
+	// 登録処理を手動に設定
 	document.getElementById('registMode').value = 1;
+	const company = document.getElementById('company').value;
+	const name = document.getElementById('name').value;
+	const position = document.getElementById('position').value;
+	const phone = document.getElementById('phone').value;
+	// 会社名に TB が含まれるか（大文字小文字対応）
+	const isTB = company.toUpperCase().includes("TB");
+
+	// ★追加：電話番号が全角ハイフンのみかどうか
+	const isFullWidthHyphenOnly = /^[ー]+$/.test(phone);
+
+	// 登録処理を自動に設定
+	document.getElementById('registMode').value = 2;
+
+	// --- 未入力チェック ---
+	const missing = [];
+	if (!company) missing.push('社名');
+	if (!name) missing.push('氏名');
+	if (!position) missing.push('役職');
+
+	// TB以外 → 電話番号必須
+	// ★修正：TB以外 → 全角ハイフンのみ も 未入力扱い
+	    if (!isTB && (!phone || isFullWidthHyphenOnly)) {
+	        missing.push('電話番号');
+	    }
+
+	if (missing.length > 0) {
+	    alert(missing.join('、') + 'を入力してください.');
+		e.preventDefault();
+	    return;
+	}
 });
 
 window.addEventListener('load', () =>{
@@ -126,10 +157,10 @@ document.getElementById('createBtn').addEventListener('click', (e) => {
     const isTB = company.toUpperCase().includes("TB");
 	
 	// ★追加：電話番号が全角ハイフンのみかどうか
-	    const isFullWidthHyphenOnly = /^[ー]+$/.test(phone);
+	const isFullWidthHyphenOnly = /^[ー]+$/.test(phone);
 		
-		// 登録処理を自動に設定
-		    document.getElementById('registMode').value = 2;
+	// 登録処理を自動に設定
+	document.getElementById('registMode').value = 2;
 
     // --- 未入力チェック ---
     const missing = [];

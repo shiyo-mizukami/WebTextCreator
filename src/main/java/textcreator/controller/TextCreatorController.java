@@ -55,7 +55,6 @@ public class TextCreatorController {
 	@PostMapping("regist")
 	public String resist(@ModelAttribute("regist") TelListForm telListForm,
 			RedirectAttributes redirect, Model model) {
-		//TB以外登録時、役職が空になる
 		if(telListForm.getRegistMode() == 1) {
 			// 登録処理が手動の場合
 			try {
@@ -90,4 +89,20 @@ public class TextCreatorController {
 		model.addAttribute("telList", telListService.findAllByOrderByCompanyNameAsc());
 		return "redirect:/";
 	}
+	
+	/**
+	 * リスト編集リクエスト
+	 */
+	@PostMapping("edit")
+	public String edit(@ModelAttribute TelListForm telListForm,
+			RedirectAttributes redirect, Model model) {
+		// 変更処理
+		
+		// エラー回避
+//		redirect.addFlashAttribute("registResult", 0);
+		// 相手先情報全件をmodelにセット
+		model.addAttribute("telList", telListService.findAllByOrderByCompanyNameAsc());
+		return "redirect:/";
+	}
 }
+
