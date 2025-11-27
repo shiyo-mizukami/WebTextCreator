@@ -113,7 +113,7 @@ window.addEventListener('load', () =>{
 })
 
 // 文章作成
-document.getElementById('createBtn').addEventListener('click', () => {
+document.getElementById('createBtn').addEventListener('click', (e) => {
     const company = document.getElementById('company').value;
     const name = document.getElementById('name').value;
     const position = document.getElementById('position').value;
@@ -127,6 +127,9 @@ document.getElementById('createBtn').addEventListener('click', () => {
 	
 	// ★追加：電話番号が全角ハイフンのみかどうか
 	    const isFullWidthHyphenOnly = /^[ー]+$/.test(phone);
+		
+		// 登録処理を自動に設定
+		    document.getElementById('registMode').value = 2;
 
     // --- 未入力チェック ---
     const missing = [];
@@ -142,6 +145,7 @@ document.getElementById('createBtn').addEventListener('click', () => {
 
     if (missing.length > 0) {
         alert(missing.join('、') + 'を入力してください.');
+		e.preventDefault();
         return;
     }
 
@@ -155,8 +159,7 @@ document.getElementById('createBtn').addEventListener('click', () => {
 `【相手先】 ${company} ${name} ${position} ${now}
 ${phoneLine}【内容】${myState || resp ? '\n' : ''}${myState ? myState + 'の旨をお伝えしたところ、' : ''}${resp ? resp + 'とのことでした。' : ''}`;
 
-    // 登録処理を自動に設定
-    document.getElementById('registMode').value = 2;
+    
 });
 
 
