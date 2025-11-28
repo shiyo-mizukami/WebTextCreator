@@ -65,7 +65,6 @@ public class TextCreatorController {
 			} catch (Exception e) {
 				// 登録処理失敗の場合
 				redirect.addFlashAttribute("registResult", 2);
-				e.printStackTrace();
 			}
 		} else {
 			// 登録処理が自動の場合
@@ -97,7 +96,12 @@ public class TextCreatorController {
 	public String edit(@ModelAttribute TelListForm telListForm,
 			RedirectAttributes redirect, Model model) {
 		// 変更処理
-		telListService.save(telListForm);
+		try {
+			telListService.save(telListForm);
+		} catch (Exception e) {
+			// 変更失敗の場合
+			redirect.addFlashAttribute("registResult", 2);
+		}
 		// 相手先情報全件をmodelにセット
 		model.addAttribute("telList", telListService.findAllByOrderByCompanyNameAsc());
 		return "redirect:/";
